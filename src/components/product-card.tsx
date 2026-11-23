@@ -11,7 +11,7 @@ export function ProductImage({ product, sizes, priority = false }: { product: Pr
   if (first) {
     return <Image src={first} alt={product.name} fill sizes={sizes} priority={priority} className="object-cover" />;
   }
-  return <ProductArt kind={product.art} color={product.colors[0]?.hex ?? "#3A3326"} label={product.name} />;
+  return <ProductArt kind={product.art} color={product.color.hex} label={product.name} />;
 }
 
 export function PriceTag({ product, large = false }: { product: Product; large?: boolean }) {
@@ -43,7 +43,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.collections.includes("nuevo") && <span className="rounded-full border border-gold/60 bg-black/70 px-2.5 py-1 text-xs text-gold">Nuevo</span>}
         </div>
         {!product.available && (
-          <span className="absolute inset-x-2 bottom-2 rounded-md bg-black/85 py-1.5 text-center text-xs text-fg">Agotado por ahora</span>
+          <span className="absolute inset-x-2 bottom-2 rounded-md bg-black/85 py-1.5 text-center text-xs text-fg">Vendida</span>
         )}
       </div>
       <div className="mt-3 flex flex-1 flex-col gap-1">
@@ -55,11 +55,8 @@ export function ProductCard({ product }: { product: Product }) {
           </Link>
         </h3>
         <PriceTag product={product} />
-        {/* Tallas a la vista (pedido de la dueña): la clienta descarta rápido lo que no le queda. */}
-        <p className="text-xs text-muted">
-          <span className="sr-only">Tallas: </span>
-          {product.sizes.join("  ")}
-        </p>
+        {/* Talla a la vista (pedido de la dueña): pieza única, la clienta descarta rápido lo que no le queda. */}
+        <p className="text-xs text-muted">Talla {product.size}</p>
       </div>
     </article>
   );

@@ -24,7 +24,7 @@ export function isOnSale(p: Product) {
 
 function haystack(p: Product) {
   return normalize(
-    [p.name, p.brand ?? "", p.description, p.category, p.audience, p.material ?? "", ...p.colors.map((c) => c.name)].join(" "),
+    [p.name, p.brand ?? "", p.description, p.category, p.audience, p.material ?? "", p.color.name].join(" "),
   );
 }
 
@@ -44,7 +44,7 @@ export function filterProducts(list: Product[], f: CatalogFilters): Product[] {
     // "ofertas" se calcula del precio para no depender de que alguien marque la etiqueta a mano.
     if (f.coleccion === "ofertas" && !isOnSale(p)) return false;
     if (f.coleccion && f.coleccion !== "ofertas" && !p.collections.includes(f.coleccion as never)) return false;
-    if (f.talla && !p.sizes.includes(f.talla)) return false;
+    if (f.talla && p.size !== f.talla) return false;
     if (f.max !== undefined && p.price > f.max) return false;
     return true;
   });
@@ -53,7 +53,7 @@ export function filterProducts(list: Product[], f: CatalogFilters): Product[] {
 
 function sortProducts(list: Product[], key: SortKey) {
   const copy = [...list];
-  // Agotados al final siempre: no esconderlos (la dueña puede reponer), pero no deben ser lo primero que se ve.
+  // Vendidas al final siempre: se dejan a la vista para que la clienta pida algo parecido, pero no deben ser lo primero que se ve.
   const byStock = (a: Product, b: Product) => Number(b.available) - Number(a.available);
   switch (key) {
     case "precio-asc":
@@ -69,7 +69,7 @@ function sortProducts(list: Product[], key: SortKey) {
 
 /** Tallas presentes en la lista, en orden lógico (CH antes que M), no alfabético. */
 export function availableSizes(list: Product[]) {
-  const set = new Set(list.flatMap((p) => p.sizes));
+  const set = new Set(list.map((p) => p.size));
   const ordered = sizeOrder.filter((s) => set.has(s)) as string[];
   const rest = [...set].filter((s) => !ordered.includes(s)).sort();
   return [...ordered, ...rest];

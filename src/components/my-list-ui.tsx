@@ -34,7 +34,7 @@ export function MyListLink({ className = "" }: { className?: string }) {
 
 const feedback = {
   added: "Agregada a tu lista",
-  duplicate: "Ya está en tu lista con esa talla y color",
+  duplicate: "Ya está en tu lista",
   full: `Tu lista llegó a ${MY_LIST_MAX} prendas. Envíala o quita alguna.`,
 } as const;
 

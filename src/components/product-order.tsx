@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import type { Product } from "@/data/catalog";
 import { store } from "@/data/store";
 import { formatPrice, layawayDeposit, productMessage, whatsappLink, type ProductIntent } from "@/lib/format";
@@ -8,59 +5,31 @@ import { AddToMyListButton } from "./my-list-ui";
 import { WhatsAppIcon } from "./whatsapp";
 
 /**
- * Selección de talla/color + acciones por WhatsApp (pedido de la dueña): Pedir, Apartar y Preguntar.
- * Cada botón manda prenda, precio, talla, color y link para que ella no tenga que preguntar "¿cuál?".
+ * Talla/color de la pieza + acciones por WhatsApp (pedido de la dueña): Pedir, Apartar y Preguntar.
+ * Pieza única (regla de la dueña, 2026-11-23): hay UNA prenda de una talla y un color, así que no hay
+ * selector; se muestra lo que existe y el mensaje ya lleva talla, color y link.
  */
 export function ProductOrder({ product, url }: { product: Product; url: string }) {
-  const singleSize = product.sizes.length === 1 ? product.sizes[0] : undefined;
-  const [size, setSize] = useState<string | undefined>(singleSize);
-  const [color, setColor] = useState(product.colors[0]?.name);
-
-  const link = (intent: ProductIntent) =>
-    whatsappLink(productMessage({ name: product.name, price: product.price, size, color, url }, intent));
+  const item = { name: product.name, price: product.price, size: product.size, color: product.color.name, url };
+  const link = (intent: ProductIntent) => whatsappLink(productMessage(item, intent));
 
   return (
     <div className="space-y-6">
-      <fieldset>
-        <legend className="mb-2 text-sm">
-          Color: <span className="text-muted">{color}</span>
-        </legend>
-        <div className="flex flex-wrap gap-2">
-          {product.colors.map((c) => (
-            <button
-              key={c.name}
-              type="button"
-              aria-pressed={color === c.name}
-              aria-label={c.name}
-              onClick={() => setColor(c.name)}
-              className={`h-11 w-11 rounded-full border-2 p-1 ${color === c.name ? "border-gold" : "border-transparent"}`}
-            >
-              <span className="block h-full w-full rounded-full border border-white/20" style={{ background: c.hex }} />
-            </button>
-          ))}
+      <dl className="grid grid-cols-2 gap-3">
+        <div className="rounded-md border border-line bg-surface px-4 py-3">
+          <dt className="text-sm text-muted">Talla</dt>
+          <dd className="mt-0.5 text-lg">{product.size}</dd>
         </div>
-      </fieldset>
-
-      <fieldset>
-        <legend className="mb-2 text-sm">
-          Talla{!size && <span className="text-muted">, elige una</span>}
-        </legend>
-        <div className="flex flex-wrap gap-2">
-          {product.sizes.map((s) => (
-            <button
-              key={s}
-              type="button"
-              aria-pressed={size === s}
-              onClick={() => setSize(s)}
-              className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border px-3 text-sm ${size === s ? "border-gold bg-gold text-black" : "border-line bg-surface hover:border-gold"}`}
-            >
-              {s}
-            </button>
-          ))}
+        <div className="rounded-md border border-line bg-surface px-4 py-3">
+          <dt className="text-sm text-muted">Color</dt>
+          <dd className="mt-0.5 flex items-center gap-2 text-lg">
+            <span className="h-4 w-4 shrink-0 rounded-full border border-white/20" style={{ background: product.color.hex }} aria-hidden="true" />
+            {product.color.name}
+          </dd>
         </div>
-      </fieldset>
+      </dl>
+      <p className="text-sm text-muted">Pieza única: solo hay una, en esta talla y color.</p>
 
-      {/* Se permite pedir sin talla: la clienta puede querer asesoría. No bloquear la venta por un dato. */}
       {product.available ? (
         <div className="space-y-3">
           <a href={link("pedir")} target="_blank" rel="noopener" className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full foil-bg px-6 text-lg font-medium hover:brightness-110">
@@ -70,20 +39,15 @@ export function ProductOrder({ product, url }: { product: Product; url: string }
             <span className="text-lg">Apartar con {formatPrice(layawayDeposit(product.price))}</span>
             <span className="text-xs text-muted">Dejas la mitad y tienes {store.layaway.days} días para liquidar</span>
           </a>
-          {/* key: al cambiar talla/color se reinicia el aviso "Agregada" (si no, describiría otra combinación). */}
-          <AddToMyListButton
-            key={`${size}|${color}`}
-            item={{ slug: product.slug, name: product.name, price: product.price, size, color }}
-          />
+          <AddToMyListButton item={{ slug: product.slug, name: product.name, price: product.price, size: product.size, color: product.color.name }} />
+          <a href={link("preguntar")} target="_blank" rel="noopener" className="flex min-h-11 items-center justify-center gap-2 text-sm text-muted underline-offset-4 hover:text-gold hover:underline">
+            <WhatsAppIcon className="h-4 w-4" /> Preguntar por WhatsApp
+          </a>
         </div>
       ) : (
-        <a href={link("preguntar")} target="_blank" rel="noopener" className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full foil-bg px-6 text-lg font-medium hover:brightness-110">
-          <WhatsAppIcon className="h-6 w-6" /> Avísame cuando llegue
-        </a>
-      )}
-      {product.available && (
-        <a href={link("preguntar")} target="_blank" rel="noopener" className="flex min-h-11 items-center justify-center gap-2 text-sm text-muted underline-offset-4 hover:text-gold hover:underline">
-          <WhatsAppIcon className="h-4 w-4" /> Preguntar por WhatsApp
+        // Vendida: no se repone, pero la dueña puede ofrecer algo parecido.
+        <a href={whatsappLink(`Hola Reno, vi que ya se vendió ${product.name}. ¿Tienen algo parecido?\n${url}`)} target="_blank" rel="noopener" className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full foil-bg px-6 text-lg font-medium hover:brightness-110">
+          <WhatsAppIcon className="h-6 w-6" /> Pedir algo parecido
         </a>
       )}
       <p className="text-center text-sm text-muted">Pago con {store.paymentMethods.join(" o ").toLowerCase()}.</p>

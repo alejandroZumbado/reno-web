@@ -21,12 +21,13 @@ const payments = store.paymentMethods.join(" o ").toLowerCase();
  * TODO(dueña): envíos y cambios/devoluciones siguen sin respuesta; no agregarlos hasta tenerla.
  */
 const faqs = [
-  { q: "¿Cómo hago un pedido?", a: "Elige tu prenda, toca Pedir por WhatsApp y te confirmamos talla, color y disponibilidad." },
+  { q: "¿Cómo hago un pedido?", a: "Elige tu prenda, toca Pedir por WhatsApp y te confirmamos que sigue disponible." },
   { q: "¿Puedo pedir varias prendas a la vez?", a: "Sí. En cada prenda toca Agregar a mi lista y luego manda toda tu lista en un solo WhatsApp, con el total ya sumado." },
   { q: "¿Puedo apartar?", a: `Sí. Dejas la mitad del precio y tienes ${store.layaway.days} días para liquidar.` },
   { q: "¿Qué formas de pago aceptan?", a: `Aceptamos ${payments}.` },
   { q: "¿Dónde están?", a: `En ${addressLine}. Abajo de esta página tienes el mapa y el botón Cómo llegar.` },
-  { q: "¿Y si no veo mi talla?", a: "Escríbenos: llega mercancía nueva seguido y no todo está en la página todavía." },
+  // Pieza única (regla de la dueña, 2026-11-23): cada prenda existe una sola vez, en una talla.
+  { q: "¿Tienen la misma prenda en otra talla?", a: "Cada prenda es pieza única: hay una sola, en la talla y color que ves. Si no es tu talla, escríbenos y te mostramos algo parecido; llega mercancía nueva seguido." },
 ];
 
 export default function HomePage() {
@@ -67,7 +68,7 @@ export default function HomePage() {
 
       <Layaway />
 
-      <Section id="ofertas" title="Ofertas" intro="Mismas prendas, mejor precio, mientras haya tallas." action={{ href: "/catalogo?coleccion=ofertas", label: "Ver todas" }}>
+      <Section id="ofertas" title="Ofertas" intro="Piezas únicas con mejor precio, hasta que se vendan." action={{ href: "/catalogo?coleccion=ofertas", label: "Ver todas" }}>
         <ProductGrid list={ofertas} />
       </Section>
 

@@ -31,8 +31,8 @@ let items: MyListItem[] = EMPTY;
 let loaded = false;
 const listeners = new Set<() => void>();
 
-/** Misma prenda con otra talla/color = otra línea: la dueña necesita saber exactamente qué separar. */
-const keyOf = (i: Pick<MyListItem, "slug" | "size" | "color">) => `${i.slug}|${i.size ?? ""}|${i.color ?? ""}`;
+/** Pieza única: el slug ya identifica la prenda exacta (talla y color van solo para el mensaje). */
+const keyOf = (i: Pick<MyListItem, "slug">) => i.slug;
 
 function isItem(v: unknown): v is MyListItem {
   const o = v as MyListItem;

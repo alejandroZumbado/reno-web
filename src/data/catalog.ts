@@ -73,15 +73,16 @@ export type Product = {
   price: number;
   /** Precio anterior; si es mayor que `price` la prenda cuenta como oferta. */
   compareAt?: number;
-  /** Tallas de ESTA prenda (las define la dueña al recibir mercancía). */
-  sizes: string[];
-  colors: { name: string; hex: string }[];
+  /** Talla de la pieza. Pieza única (regla de la dueña): una prenda = una talla, no hay selector. */
+  size: string;
+  color: { name: string; hex: string };
   material?: string;
   care?: string;
   description: string;
   /** Rutas en /public/products. Vacío = se usa `art`. */
   images: string[];
   art: ArtKind;
+  /** false = ya se vendió (pieza única, no se repone). */
   available: boolean;
 };
 

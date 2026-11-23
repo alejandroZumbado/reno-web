@@ -43,7 +43,7 @@ export function MyListView() {
                 {item.name}
               </Link>
               <p className="text-sm text-muted">
-                {[item.size && `Talla ${item.size}`, item.color].filter(Boolean).join(", ") || "Sin talla elegida"}
+                {[item.size && `Talla ${item.size}`, item.color].filter(Boolean).join(", ")}
               </p>
             </div>
             <p className="shrink-0">{formatPrice(item.price)}</p>
