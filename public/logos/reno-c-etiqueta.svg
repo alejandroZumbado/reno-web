@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 120" role="img" aria-labelledby="t">
+  <title id="t">Reno — opción C: etiqueta de ropa</title>
+  <path d="M12 60L44 18H236A12 12 0 0 1 248 30V90A12 12 0 0 1 236 102H44Z" fill="#B4472B"/>
+  <circle cx="40" cy="60" r="7" fill="#FAF7F2"/>
+  <path d="M40 60C24 60 10 48 4 30" fill="none" stroke="#1C1917" stroke-width="2" stroke-linecap="round"/>
+  <text x="150" y="76" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-style="italic" font-weight="700" fill="#FAF7F2">reno</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="t">
+  <title id="t">Reno — opción E: sello</title>
+  <defs>
+    <path id="arc" d="M100 100m-70 0a70 70 0 1 1 140 0a70 70 0 1 1 -140 0"/>
+  </defs>
+  <circle cx="100" cy="100" r="96" fill="#FAF7F2" stroke="#1C1917" stroke-width="3"/>
+  <circle cx="100" cy="100" r="56" fill="#B4472B"/>
+  <text font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="5" fill="#1C1917">
+    <textPath href="#arc" startOffset="0">RENO · ROPA PARA TODOS · HECHO EN MÉXICO ·</textPath>
+  </text>
+  <g transform="translate(78 62) scale(.7)" fill="none" stroke="#FAF7F2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M30 58C30 44 26 34 18 24C14 19 10 14 8 6M22 30C16 30 10 28 5 23M14 18C17 13 18 9 18 4"/>
+    <path d="M34 58C34 44 38 34 46 24C50 19 54 14 56 6M42 30C48 30 54 28 59 23M50 18C47 13 46 9 46 4"/>
+  </g>
+  <text x="100" y="132" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" letter-spacing="3" fill="#FAF7F2">RENO</text>
+</svg>

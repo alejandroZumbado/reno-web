@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="t">
+  <title id="t">Reno — opción B: monograma</title>
+  <circle cx="80" cy="80" r="76" fill="#2F5D50"/>
+  <circle cx="80" cy="80" r="68" fill="none" stroke="#FAF7F2" stroke-width="1.5" opacity=".6"/>
+  <g transform="translate(58 22) scale(.7)" fill="none" stroke="#FAF7F2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M30 58C30 44 26 34 18 24C14 19 10 14 8 6M22 30C16 30 10 28 5 23M14 18C17 13 18 9 18 4"/>
+    <path d="M34 58C34 44 38 34 46 24C50 19 54 14 56 6M42 30C48 30 54 28 59 23M50 18C47 13 46 9 46 4"/>
+  </g>
+  <text x="80" y="122" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="64" font-weight="700" fill="#FAF7F2">R</text>
+</svg>

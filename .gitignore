@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local (no subir)
+INIT.md
+INIT_HISTORY.md
+.claude/settings.local.json
+.vercel
