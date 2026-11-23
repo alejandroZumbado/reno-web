@@ -45,3 +45,5 @@ INIT.md
 INIT_HISTORY.md
 .claude/settings.local.json
 .vercel
+.vercel
+.env*
