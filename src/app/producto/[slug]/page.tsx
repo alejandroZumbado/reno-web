@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: PageProps<"/producto/[slug]">
   if (!p) return { title: "Producto no encontrado" };
   return {
     title: p.name,
-    description: `${p.name} · ${formatPrice(p.price)}. ${p.description}`,
-    openGraph: { title: `${p.name} · ${formatPrice(p.price)}`, description: p.description, images: p.images[0] ? [p.images[0]] : undefined },
+    description: `${p.name}, ${formatPrice(p.price)}. ${p.description}`,
+    openGraph: { title: `${p.name}, ${formatPrice(p.price)}`, description: p.description, images: p.images[0] ? [p.images[0]] : undefined },
   };
 }
 
@@ -53,15 +53,15 @@ export default async function ProductPage({ params }: PageProps<"/producto/[slug
       </nav>
 
       <div className="mt-6 grid gap-8 md:grid-cols-2 lg:gap-14">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-arena md:sticky md:top-24 md:self-start">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-lg border border-line bg-surface md:sticky md:top-24 md:self-start">
           <ProductImage product={product} sizes="(min-width:768px) 50vw, 100vw" priority />
         </div>
 
         <div>
-          {isOnSale(product) && <p className="mb-2 inline-block rounded-full bg-terracota px-3 py-1 text-xs font-semibold text-white">Oferta</p>}
-          <h1 className="font-display text-3xl font-bold sm:text-4xl">{product.name}</h1>
+          {isOnSale(product) && <p className="mb-3 inline-block rounded-full foil-bg px-3 py-1 text-xs font-medium">Oferta</p>}
+          <h1 className="font-display text-4xl sm:text-5xl">{product.name}</h1>
           <div className="mt-3"><PriceTag product={product} large /></div>
-          {!product.available && <p className="mt-2 font-semibold text-terracota">Agotado por ahora</p>}
+          {!product.available && <p className="mt-2 text-gold">Agotado por ahora</p>}
           <p className="mt-5 text-lg text-muted">{product.description}</p>
 
           <div className="mt-8"><ProductOrder product={product} url={url} /></div>
@@ -76,7 +76,7 @@ export default async function ProductPage({ params }: PageProps<"/producto/[slug
 
       {related.length > 0 && (
         <section aria-labelledby="relacionados" className="mt-16">
-          <h2 id="relacionados" className="mb-6 font-display text-2xl font-bold">También te puede gustar</h2>
+          <h2 id="relacionados" className="mb-6 font-display text-3xl">También te puede gustar</h2>
           <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 lg:grid-cols-4">
             {related.map((p) => <ProductCard key={p.slug} product={p} />)}
           </div>
@@ -89,7 +89,7 @@ export default async function ProductPage({ params }: PageProps<"/producto/[slug
 function Detail({ term, value }: { term: string; value: string }) {
   return (
     <div className="grid grid-cols-[100px_1fr] gap-4 py-3">
-      <dt className="font-semibold">{term}</dt>
+      <dt className="text-fg">{term}</dt>
       <dd className="text-muted">{value}</dd>
     </div>
   );

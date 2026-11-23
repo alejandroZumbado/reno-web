@@ -1,22 +1,27 @@
+import Image from "next/image";
 import Link from "next/link";
+import logo from "../../public/brand/reno-logo.png";
+import mark from "../../public/brand/reno-mark.png";
 
-/** Astas de reno: símbolo de marca (Reno = reno en español). Misma geometría que public/logos/*.svg. */
-export function AntlerMark({ className = "h-8 w-8" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 64 64" className={className} aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M30 58C30 44 26 34 18 24C14 19 10 14 8 6M22 30C16 30 10 28 5 23M14 18C17 13 18 9 18 4" />
-      <path d="M34 58C34 44 38 34 46 24C50 19 54 14 56 6M42 30C48 30 54 28 59 23M50 18C47 13 46 9 46 4" />
-    </svg>
-  );
+/**
+ * Logos generados del JPG oficial de la dueña con `scripts/make_brand_assets.py` (fondo transparente).
+ * No editar los PNG a mano: si cambia el logo, reemplazar el JPG y volver a correr el script.
+ */
+
+/** Logo completo (venado-gancho + "Reno" + "Ropa premium"). Para hero, 404 y footer. */
+export function LogoImage({ className, priority = false, sizes }: { className?: string; priority?: boolean; sizes: string }) {
+  return <Image src={logo} alt="Reno, ropa premium" className={className} priority={priority} sizes={sizes} />;
 }
 
-/** Logo del header/footer (opción A provisional hasta que la dueña elija en /logos). */
-export function Logo({ tone = "dark" }: { tone?: "dark" | "light" }) {
-  const text = tone === "dark" ? "text-ink" : "text-crema";
+/**
+ * Logo del header: solo el venado + "Reno" en Bodoni.
+ * Por qué no el logo completo: a 48px "ROPA PREMIUM" no se lee; el venado sí se reconoce.
+ */
+export function Logo({ className = "" }: { className?: string }) {
   return (
-    <Link href="/" className={`inline-flex min-h-11 items-center gap-2 ${text}`} aria-label="Reno, ir al inicio">
-      <AntlerMark className="h-8 w-8 text-terracota" />
-      <span className="font-display text-2xl font-bold tracking-[0.2em]">RENO</span>
+    <Link href="/" className={`inline-flex shrink-0 items-center gap-1.5 ${className}`} aria-label="Reno, ir al inicio">
+      <Image src={mark} alt="" className="h-11 w-auto sm:h-12" sizes="48px" priority />
+      <span aria-hidden="true" className="foil-text font-display text-2xl max-[389px]:hidden leading-none sm:text-[1.7rem]">Reno</span>
     </Link>
   );
 }

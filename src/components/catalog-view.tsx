@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useId, useMemo, useState, type ReactNode } from "react";
-import { audiences, categories, collections, labelOf, type Product } from "@/data/catalog";
+import { audiences, categories, categoriesFor, collections, labelOf, type Product } from "@/data/catalog";
 import { availableSizes, filterProducts, parseFilters, type CatalogFilters } from "@/lib/search";
 import { formatPrice } from "@/lib/format";
 import { ProductCard } from "./product-card";
@@ -25,7 +25,13 @@ export function CatalogView({ products }: { products: Product[] }) {
 
   const filters = useMemo(() => parseFilters(new URLSearchParams(params.toString())), [params]);
   const results = useMemo(() => filterProducts(products, filters), [products, filters]);
-  const sizes = useMemo(() => availableSizes(products), [products]);
+  // Tipos y tallas dependen de la sección elegida (pedido de la dueña): en Mujer no se ofrecen
+  // camisas de hombre, y las tallas de hombre no llegan igual que las de mujer.
+  const typeOptions = useMemo(() => categoriesFor(filters.para), [filters.para]);
+  const sizes = useMemo(
+    () => availableSizes(filters.para ? products.filter((p) => p.audience === filters.para) : products),
+    [products, filters.para],
+  );
 
   // replace (no push) para que "atrás" no recorra cada clic de filtro; scroll:false para no saltar arriba.
   function update(patch: Partial<Record<keyof CatalogFilters, string | undefined>>) {
@@ -50,7 +56,7 @@ export function CatalogView({ products }: { products: Product[] }) {
           onClick={() => setShowFilters((v) => !v)}
           aria-expanded={showFilters}
           aria-controls="filtros"
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-ink px-4 text-sm font-semibold lg:hidden"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-gold px-4 text-sm text-gold lg:hidden"
         >
           Filtros{active.length > 0 && ` (${active.length})`}
         </button>
@@ -59,23 +65,24 @@ export function CatalogView({ products }: { products: Product[] }) {
             key={chip.key}
             type="button"
             onClick={() => update({ [chip.key]: undefined })}
-            className="inline-flex min-h-11 items-center gap-1 rounded-full bg-arena px-4 text-sm"
+            className="inline-flex min-h-11 items-center gap-1 rounded-full border border-line bg-surface px-4 text-sm hover:border-gold"
             aria-label={`Quitar filtro ${chip.label}`}
           >
             {chip.label} <span aria-hidden="true">×</span>
           </button>
         ))}
         {active.length > 0 && (
-          <button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="inline-flex min-h-11 items-center px-2 text-sm font-semibold text-terracota underline">
+          <button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="inline-flex min-h-11 items-center px-2 text-sm text-gold underline">
             Limpiar todo
           </button>
         )}
       </div>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-[240px_1fr]">
-        <aside id="filtros" aria-label="Filtros" className={`${showFilters ? "block" : "hidden"} space-y-6 rounded-2xl border border-line bg-white p-5 lg:block lg:self-start lg:sticky lg:top-24`}>
-          <FilterGroup title="Para quién" options={audiences} value={filters.para} onChange={(v) => update({ para: v })} />
-          <FilterGroup title="Tipo de prenda" options={categories} value={filters.tipo} onChange={(v) => update({ tipo: v })} />
+        <aside id="filtros" aria-label="Filtros" className={`${showFilters ? "block" : "hidden"} space-y-6 rounded-lg border border-line bg-surface p-5 lg:block lg:self-start lg:sticky lg:top-24`}>
+          {/* Al cambiar de sección se limpian tipo y talla: pueden no existir en la otra sección. */}
+          <FilterGroup title="Sección" options={audiences} value={filters.para} onChange={(v) => update({ para: v, tipo: undefined, talla: undefined })} />
+          <FilterGroup title="Tipo de prenda" options={typeOptions} value={filters.tipo} onChange={(v) => update({ tipo: v })} />
           <FilterGroup title="Colección" options={collections} value={filters.coleccion} onChange={(v) => update({ coleccion: v })} />
           <FilterGroup title="Talla" options={sizes.map((s) => ({ id: s, label: s }))} value={filters.talla} onChange={(v) => update({ talla: v })} compact />
           <FilterGroup
@@ -130,10 +137,10 @@ function SearchInput({ initial, onSearch }: { initial: string; onSearch: (q: str
         type="search"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="¿Qué buscas? Ej. pantalón mezclilla, sudadera gris"
-        className="h-12 min-w-0 flex-1 rounded-full border border-line bg-white px-5 placeholder:text-muted"
+        placeholder="¿Qué buscas? Ej. pantalón de vestir, sudadera gris"
+        className="h-12 min-w-0 flex-1 rounded-full border border-line bg-surface px-5 placeholder:text-muted focus:border-gold"
       />
-      <button type="submit" className="h-12 shrink-0 rounded-full bg-ink px-6 font-semibold text-crema">Buscar</button>
+      <button type="submit" className="h-12 shrink-0 rounded-full foil-bg px-6 font-medium">Buscar</button>
     </form>
   );
 }
@@ -141,7 +148,7 @@ function SearchInput({ initial, onSearch }: { initial: string; onSearch: (q: str
 function FilterGroup({ title, options, value, onChange, compact = false }: { title: string; options: readonly { id: string; label: string }[]; value?: string; onChange: (v: string | undefined) => void; compact?: boolean }) {
   return (
     <fieldset>
-      <legend className="mb-2 text-sm font-semibold">{title}</legend>
+      <legend className="mb-2 font-display text-lg text-gold">{title}</legend>
       <div className={`flex flex-wrap gap-2 ${compact ? "" : "lg:flex-col lg:items-start"}`}>
         {options.map((o) => {
           const selected = value === o.id;
@@ -162,7 +169,7 @@ function Pill({ selected, onClick, children }: { selected: boolean; onClick: () 
       type="button"
       aria-pressed={selected}
       onClick={onClick}
-      className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-sm transition-colors lg:min-h-9 ${selected ? "border-ink bg-ink text-crema" : "border-line bg-crema hover:border-ink"}`}
+      className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-sm transition-colors lg:min-h-9 ${selected ? "border-gold bg-gold text-black" : "border-line bg-night hover:border-gold"}`}
     >
       {children}
     </button>
@@ -174,7 +181,7 @@ function SortSelect({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div className="flex items-center gap-2">
       <label htmlFor={id} className="text-sm text-muted">Ordenar</label>
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="h-11 rounded-full border border-line bg-white px-4 text-sm">
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="h-11 rounded-full border border-line bg-surface px-4 text-sm">
         {sortOptions.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
       </select>
     </div>
@@ -183,10 +190,10 @@ function SortSelect({ value, onChange }: { value: string; onChange: (v: string) 
 
 function EmptyState({ onReset }: { onReset: () => void }) {
   return (
-    <div className="rounded-2xl border border-dashed border-line bg-white p-10 text-center">
-      <p className="font-display text-xl font-bold">No encontramos prendas con esos filtros</p>
+    <div className="rounded-lg border border-dashed border-line bg-surface p-10 text-center">
+      <p className="font-display text-2xl">No encontramos prendas con esos filtros</p>
       <p className="mt-2 text-muted">Prueba con menos filtros o escríbenos: muchas prendas llegan cada semana y aún no están en la página.</p>
-      <button type="button" onClick={onReset} className="mt-5 inline-flex min-h-12 items-center rounded-full bg-terracota px-6 font-semibold text-white">
+      <button type="button" onClick={onReset} className="mt-5 inline-flex min-h-12 items-center rounded-full foil-bg px-6 font-medium">
         Ver todo el catálogo
       </button>
     </div>

@@ -5,7 +5,7 @@ import { products } from "@/data/products";
 
 export const metadata: Metadata = {
   title: "Catálogo",
-  description: "Busca ropa de dama, caballero, niños y bebé por tipo de prenda, talla, colección y precio.",
+  description: "Busca ropa de mujer y hombre por tipo de prenda, talla, colección y precio.",
 };
 
 /**
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function CatalogPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6">
-      <h1 className="font-display text-3xl font-bold sm:text-4xl">Catálogo</h1>
+      <h1 className="font-display text-4xl sm:text-5xl">Catálogo</h1>
       <Suspense fallback={<p className="mt-8 text-muted">Cargando catálogo…</p>}>
         <CatalogView products={products} />
       </Suspense>

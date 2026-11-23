@@ -1,38 +1,103 @@
 @import "tailwindcss";
 
 /*
- * Paleta Reno (propuesta, pendiente de aprobar con la dueña).
- * Contrastes verificados WCAG AA: ink/crema 16:1, terracota/crema 5.1:1, blanco/terracota 5.4:1.
- * No aclarar terracota ni agave sin volver a medir contraste.
+ * Paleta Reno: dorado brillante y negro (pedido de la dueña, 2026-11-22).
+ * Contrastes WCAG AA sobre #000: marfil 18:1, dorado #F2C230 12:1, gris #A79E8B 7.9:1.
+ * Texto sobre dorado siempre en negro (#000), nunca blanco (contraste < 2:1).
  */
 @theme {
-  --color-crema: #faf7f2;
-  --color-arena: #efe7da;
-  --color-ink: #1c1917;
-  --color-muted: #57534e;
-  --color-terracota: #b4472b;
-  --color-terracota-dark: #8f3720;
-  --color-agave: #2f5d50;
-  --color-line: #e2d9cb;
+  /* "night", NO "base": --color-base genera la clase text-base de color y pisa el tamaño text-base (nombres de prendas salían negros). */
+  --color-night: #000000;
+  --color-surface: #15130f;
+  --color-raised: #211d16;
+  --color-fg: #f4eedf;
+  --color-muted: #a79e8b;
+  --color-gold: #f2c230;
+  --color-gold-deep: #b8860b;
+  --color-line: #3a3326;
 
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-jost);
+  --font-display: var(--font-bodoni);
 }
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--color-crema);
-  color: var(--color-ink);
+  background: var(--color-night);
+  color: var(--color-fg);
 }
 
-/* Foco siempre visible para teclado (WCAG 2.4.7); no quitar outline sin reemplazo. */
+/* Dorado tipo lámina: el único efecto "brillante" del sitio; reservarlo para marca y títulos grandes. */
+.foil-text {
+  background: linear-gradient(115deg, #fff2b0 0%, #f2c230 28%, #b8860b 55%, #ffe27a 78%, #c9971a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.foil-bg {
+  background: linear-gradient(115deg, #ffe58a 0%, #f2c230 35%, #d9a521 65%, #ffe27a 100%);
+  color: #000;
+}
+
+/*
+ * Destello del logo del hero: una franja de luz cruza el logo UNA vez al cargar.
+ * Es el único movimiento automático del sitio (decisión de diseño: un momento, no efectos regados).
+ * La máscara usa el mismo PNG para que la luz solo se vea sobre el dorado, no sobre el fondo.
+ * Si cambia el nombre de public/brand/reno-logo.png, actualizarlo aquí también.
+ */
+.logo-glint {
+  position: relative;
+}
+.logo-glint::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 248 220 / 0.85) 50%, transparent 65%);
+  background-size: 250% 100%;
+  background-position: 120% 0;
+  -webkit-mask: url("/brand/reno-logo.png") center / contain no-repeat;
+  mask: url("/brand/reno-logo.png") center / contain no-repeat;
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: glint 1.8s 0.4s ease-out 1 both;
+}
+@keyframes glint {
+  0% { background-position: 120% 0; opacity: 1; }
+  85% { opacity: 1; }
+  100% { background-position: -40% 0; opacity: 0; }
+}
+
+/*
+ * Panel Mujer/Hombre "colgado" de un gancho dorado: el motivo del logo (venado-gancho)
+ * llevado a la estructura. Solo decoración, por eso es un pseudo-elemento.
+ */
+.hanger-panel::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 72px;
+  height: 22px;
+  transform: translateX(-50%);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 22' fill='none' stroke='%23f2c230' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M36 9V7a3 3 0 1 0-3-3'/%3E%3Cpath d='M36 9 3 21h66Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  /* El panel tapa la mitad inferior del gancho con su fondo: parece que cuelga del borde. */
+  translate: 0 -55%;
+}
+
+/* Mapa de Google en modo oscuro: invert + hue-rotate conserva tonos (agua azul, pin rojo). */
+.map-dark {
+  filter: invert(0.9) hue-rotate(180deg) saturate(0.7) brightness(0.95);
+}
+
+/* Foco siempre visible (WCAG 2.4.7). Dorado sobre negro = 12:1. */
 :focus-visible {
-  outline: 3px solid var(--color-agave);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {

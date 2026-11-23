@@ -8,14 +8,14 @@ export function WhatsAppIcon({ className = "h-5 w-5" }: { className?: string }) 
   );
 }
 
-/** Botón flotante: en móvil el contacto debe estar a un toque desde cualquier página. */
+/** Botón flotante dorado (texto negro: blanco sobre dorado no pasa contraste). En móvil el contacto debe estar a un toque desde cualquier página. */
 export function WhatsAppFab() {
   return (
     <a
       href={whatsappLink("Hola Reno, quiero información sobre su ropa.")}
       target="_blank"
       rel="noopener"
-      className="fixed bottom-4 right-4 z-30 inline-flex h-14 items-center gap-2 rounded-full bg-agave px-5 font-semibold text-white shadow-lg hover:bg-agave/90"
+      className="fixed bottom-4 right-4 z-30 inline-flex h-14 items-center gap-2 rounded-full foil-bg px-5 font-medium shadow-lg shadow-black/60 hover:brightness-110"
     >
       <WhatsAppIcon className="h-6 w-6" />
       <span className="hidden sm:inline">Escríbenos</span>

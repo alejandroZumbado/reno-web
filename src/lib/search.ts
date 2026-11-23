@@ -24,7 +24,7 @@ export function isOnSale(p: Product) {
 
 function haystack(p: Product) {
   return normalize(
-    [p.name, p.description, p.category, p.audience, p.material ?? "", ...p.colors.map((c) => c.name)].join(" "),
+    [p.name, p.brand ?? "", p.description, p.category, p.audience, p.material ?? "", ...p.colors.map((c) => c.name)].join(" "),
   );
 }
 
