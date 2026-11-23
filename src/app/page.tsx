@@ -119,24 +119,25 @@ function Hero() {
       <div className="relative mx-auto grid max-w-7xl items-center gap-6 px-4 pb-4 pt-8 sm:px-6 md:grid-cols-[1.05fr_1fr] md:pt-14">
         <div className="order-2 md:order-1">
           <h1 id="hero-title" className="font-display text-[2.6rem] leading-[1.04] sm:text-6xl lg:text-7xl">
-            Ropa premium para mujer y hombre
+            Prendas seleccionadas para mujer y hombre
           </h1>
           <p className="mt-5 max-w-md text-lg text-muted">
-            Deportiva, de vestir, pantalones, chamarras, abrigos y sacos. Aparta con la mitad y llévatela en {store.layaway.days} días.
+            {/* Tono boutique (opción A elegida por Alejandro, 2026-11-23): selección y servicio, no lista de datos. */}
+            Ropa de vestir, deportiva y de temporada, elegida pieza por pieza. Aparta la tuya con la mitad de su precio y liquídala con calma en {store.layaway.days} días.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/catalogo" className="inline-flex min-h-12 items-center justify-center rounded-full foil-bg px-8 font-medium hover:brightness-110">
-              Ver catálogo
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Link href="/catalogo" className="inline-flex min-h-12 items-center justify-center whitespace-nowrap rounded-full foil-bg px-8 font-medium hover:brightness-110">
+              Explorar la colección
             </Link>
-            <a href={whatsappLink("Hola Reno, quiero información sobre su ropa.")} target="_blank" rel="noopener" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-gold px-7 text-gold hover:bg-gold/10">
-              <WhatsAppIcon /> Escríbenos
+            <a href={whatsappLink("Hola Reno, quiero información sobre su ropa.")} target="_blank" rel="noopener" className="inline-flex min-h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-gold px-7 text-gold hover:bg-gold/10">
+              <WhatsAppIcon /> Atención por WhatsApp
             </a>
           </div>
           {/* Lo que más pregunta la clienta, a la vista antes de bajar. */}
           <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-line pt-5 text-sm">
-            <HeroFact term="Apartas con" value={`${deposit} del precio`} />
-            <HeroFact term="Liquidas en" value={`${store.layaway.days} días`} />
-            <HeroFact term="Pagas con" value={payments} />
+            <HeroFact term="Apartado" value={`${deposit} de anticipo`} />
+            <HeroFact term="Plazo para liquidar" value={`${store.layaway.days} días`} />
+            <HeroFact term="Formas de pago" value={store.paymentMethods.join(" y ").toLowerCase()} />
           </dl>
         </div>
         <div className="logo-glint order-1 mx-auto w-full max-w-[16rem] sm:max-w-xs md:order-2 md:max-w-md">
