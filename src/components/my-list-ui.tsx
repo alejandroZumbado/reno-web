@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { addToMyList, MY_LIST_MAX, useMyList, type MyListItem } from "@/lib/my-list";
+import { addToMyList, MY_LIST_MAX, type MyListItem } from "@/lib/my-list";
+import { useMyListForSale } from "@/lib/my-list-for-sale";
 
 /** Ícono de gancho (mismo motivo del logo) para "Mi lista": una lista de prendas colgadas. */
 export function HangerIcon({ className = "h-5 w-5" }: { className?: string }) {
@@ -16,7 +17,7 @@ export function HangerIcon({ className = "h-5 w-5" }: { className?: string }) {
 
 /** Link del header con contador. El número solo aparece tras hidratar (en el servidor la lista es vacía). */
 export function MyListLink({ className = "" }: { className?: string }) {
-  const count = useMyList().length;
+  const count = useMyListForSale().items.length;
   return (
     <Link href="/mi-lista" className={`relative inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-full px-2 hover:text-gold ${className}`}>
       <HangerIcon className="h-6 w-6" />

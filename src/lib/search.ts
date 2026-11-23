@@ -53,17 +53,15 @@ export function filterProducts(list: Product[], f: CatalogFilters): Product[] {
 
 function sortProducts(list: Product[], key: SortKey) {
   const copy = [...list];
-  // Vendidas al final siempre: se dejan a la vista para que la clienta pida algo parecido, pero no deben ser lo primero que se ve.
-  const byStock = (a: Product, b: Product) => Number(b.available) - Number(a.available);
   switch (key) {
     case "precio-asc":
-      return copy.sort((a, b) => byStock(a, b) || a.price - b.price);
+      return copy.sort((a, b) => a.price - b.price);
     case "precio-desc":
-      return copy.sort((a, b) => byStock(a, b) || b.price - a.price);
+      return copy.sort((a, b) => b.price - a.price);
     case "nombre":
-      return copy.sort((a, b) => byStock(a, b) || a.name.localeCompare(b.name, "es"));
+      return copy.sort((a, b) => a.name.localeCompare(b.name, "es"));
     default:
-      return copy.sort(byStock);
+      return copy;
   }
 }
 

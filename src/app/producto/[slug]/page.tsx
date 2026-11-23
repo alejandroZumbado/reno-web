@@ -61,7 +61,6 @@ export default async function ProductPage({ params }: PageProps<"/producto/[slug
           {isOnSale(product) && <p className="mb-3 inline-block rounded-full foil-bg px-3 py-1 text-xs font-medium">Oferta</p>}
           <h1 className="font-display text-4xl sm:text-5xl">{product.name}</h1>
           <div className="mt-3"><PriceTag product={product} large /></div>
-          {!product.available && <p className="mt-2 text-gold">Vendida</p>}
           <p className="mt-5 text-lg text-muted">{product.description}</p>
 
           <div className="mt-8"><ProductOrder product={product} url={url} /></div>

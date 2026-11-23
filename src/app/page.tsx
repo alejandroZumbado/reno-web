@@ -31,8 +31,8 @@ const faqs = [
 ];
 
 export default function HomePage() {
-  const nuevos = products.filter((p) => p.collections.includes("nuevo") && p.available).slice(0, 4);
-  const ofertas = products.filter((p) => isOnSale(p) && p.available).slice(0, 4);
+  const nuevos = products.filter((p) => p.collections.includes("nuevo")).slice(0, 4);
+  const ofertas = products.filter((p) => isOnSale(p)).slice(0, 4);
 
   return (
     <>

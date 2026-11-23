@@ -30,26 +30,20 @@ export function ProductOrder({ product, url }: { product: Product; url: string }
       </dl>
       <p className="text-sm text-muted">Pieza única: solo hay una, en esta talla y color.</p>
 
-      {product.available ? (
-        <div className="space-y-3">
-          <a href={link("pedir")} target="_blank" rel="noopener" className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full foil-bg px-6 text-lg font-medium hover:brightness-110">
-            <WhatsAppIcon className="h-6 w-6" /> Pedir por WhatsApp
-          </a>
-          <a href={link("apartar")} target="_blank" rel="noopener" className="flex min-h-14 w-full flex-col items-center justify-center rounded-full border border-gold px-6 text-gold hover:bg-gold/10">
-            <span className="text-lg">Apartar con {formatPrice(layawayDeposit(product.price))}</span>
-            <span className="text-xs text-muted">Dejas la mitad y tienes {store.layaway.days} días para liquidar</span>
-          </a>
-          <AddToMyListButton item={{ slug: product.slug, name: product.name, price: product.price, size: product.size, color: product.color.name }} />
-          <a href={link("preguntar")} target="_blank" rel="noopener" className="flex min-h-11 items-center justify-center gap-2 text-sm text-muted underline-offset-4 hover:text-gold hover:underline">
-            <WhatsAppIcon className="h-4 w-4" /> Preguntar por WhatsApp
-          </a>
-        </div>
-      ) : (
-        // Vendida: no se repone, pero la dueña puede ofrecer algo parecido.
-        <a href={whatsappLink(`Hola Reno, vi que ya se vendió ${product.name}. ¿Tienen algo parecido?\n${url}`)} target="_blank" rel="noopener" className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full foil-bg px-6 text-lg font-medium hover:brightness-110">
-          <WhatsAppIcon className="h-6 w-6" /> Pedir algo parecido
+      {/* Solo llegan aquí prendas a la venta: las vendidas ya no tienen ficha (404). */}
+      <div className="space-y-3">
+        <a href={link("pedir")} target="_blank" rel="noopener" className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full foil-bg px-6 text-lg font-medium hover:brightness-110">
+          <WhatsAppIcon className="h-6 w-6" /> Pedir por WhatsApp
         </a>
-      )}
+        <a href={link("apartar")} target="_blank" rel="noopener" className="flex min-h-14 w-full flex-col items-center justify-center rounded-full border border-gold px-6 text-gold hover:bg-gold/10">
+          <span className="text-lg">Apartar con {formatPrice(layawayDeposit(product.price))}</span>
+          <span className="text-xs text-muted">Dejas la mitad y tienes {store.layaway.days} días para liquidar</span>
+        </a>
+        <AddToMyListButton item={{ slug: product.slug, name: product.name, price: product.price, size: product.size, color: product.color.name }} />
+        <a href={link("preguntar")} target="_blank" rel="noopener" className="flex min-h-11 items-center justify-center gap-2 text-sm text-muted underline-offset-4 hover:text-gold hover:underline">
+          <WhatsAppIcon className="h-4 w-4" /> Preguntar por WhatsApp
+        </a>
+      </div>
       <p className="text-center text-sm text-muted">Pago con {store.paymentMethods.join(" o ").toLowerCase()}.</p>
     </div>
   );

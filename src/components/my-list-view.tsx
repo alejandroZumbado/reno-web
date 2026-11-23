@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { store } from "@/data/store";
 import { formatPrice, listDeposit, listMessage, whatsappLink } from "@/lib/format";
-import { clearMyList, myListKey, removeFromMyList, useHydrated, useMyList } from "@/lib/my-list";
+import { clearMyList, myListKey, removeFromMyList, useHydrated } from "@/lib/my-list";
+import { useMyListForSale } from "@/lib/my-list-for-sale";
 import { HangerIcon } from "./my-list-ui";
 import { WhatsAppIcon } from "./whatsapp";
 
@@ -12,7 +13,7 @@ import { WhatsAppIcon } from "./whatsapp";
  * Los precios son los guardados al agregar; la dueña confirma el precio vigente en el chat.
  */
 export function MyListView() {
-  const items = useMyList();
+  const { items, soldCount } = useMyListForSale();
   const hydrated = useHydrated();
 
   if (!hydrated) return <p className="mt-10 text-muted">Cargando tu lista…</p>;
@@ -20,6 +21,7 @@ export function MyListView() {
   if (items.length === 0) {
     return (
       <div className="mt-10 rounded-lg border border-dashed border-line px-6 py-14 text-center">
+        {soldCount > 0 && <p className="mb-6 text-gold"><SoldNotice count={soldCount} /></p>}
         <HangerIcon className="mx-auto h-10 w-10 text-gold" />
         <p className="mt-4 text-lg">Tu lista está vacía</p>
         <p className="mt-1 text-muted">En cada prenda toca Agregar a mi lista y aquí las juntas para pedirlas juntas.</p>
@@ -35,6 +37,7 @@ export function MyListView() {
 
   return (
     <div className="mt-8">
+      {soldCount > 0 && <p className="mb-4 text-gold"><SoldNotice count={soldCount} /></p>}
       <ul className="divide-y divide-line border-y border-line" aria-label="Prendas en tu lista">
         {items.map((item) => (
           <li key={myListKey(item)} className="flex items-center gap-4 py-4">
@@ -97,4 +100,8 @@ export function MyListView() {
       </div>
     </div>
   );
+}
+
+function SoldNotice({ count }: { count: number }) {
+  return <>{count === 1 ? "Una prenda de tu lista ya se vendió y la quitamos." : `${count} prendas de tu lista ya se vendieron y las quitamos.`}</>;
 }

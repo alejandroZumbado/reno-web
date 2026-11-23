@@ -42,9 +42,6 @@ export function ProductCard({ product }: { product: Product }) {
           {sale && <span className="rounded-full foil-bg px-2.5 py-1 text-xs font-medium">-{discount}%</span>}
           {product.collections.includes("nuevo") && <span className="rounded-full border border-gold/60 bg-black/70 px-2.5 py-1 text-xs text-gold">Nuevo</span>}
         </div>
-        {!product.available && (
-          <span className="absolute inset-x-2 bottom-2 rounded-md bg-black/85 py-1.5 text-center text-xs text-fg">Vendida</span>
-        )}
       </div>
       <div className="mt-3 flex flex-1 flex-col gap-1">
         <p className="text-xs text-muted">{labelOf(audiences, product.audience)}</p>
