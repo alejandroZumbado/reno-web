@@ -4,8 +4,9 @@ import { getPublicPhotoUrls } from "@/lib/products";
 import { PHOTO_PATH_RE } from "@/lib/server/photos";
 
 /**
- * Sirve fotos del almacén PRIVADO. Fotos de prendas a la venta: cualquiera, con caché larga de CDN
- * (las rutas llevan un id aleatorio y nunca se reescriben, así que no se ven fotos viejas).
+ * Sirve fotos del almacén PRIVADO. Fotos de prendas a la venta: cualquiera, con caché CORTA en el CDN
+ * (5 min): al marcar vendida, la foto debe dejar de ser pública pronto. Con 30 días (versión anterior)
+ * el CDN la seguía sirviendo a cualquiera. El navegador de cada clienta la guarda 1 h (no afecta a otros).
  * Fotos de vendidas o recién subidas sin guardar: solo con sesión de admin y sin caché.
  */
 export async function GET(_req: Request, ctx: RouteContext<"/fotos/[...ruta]">) {
@@ -24,7 +25,7 @@ export async function GET(_req: Request, ctx: RouteContext<"/fotos/[...ruta]">) 
     headers: {
       "Content-Type": res.blob.contentType,
       "X-Content-Type-Options": "nosniff",
-      "Cache-Control": isPublic ? "public, max-age=86400, s-maxage=2592000" : "private, no-store",
+      "Cache-Control": isPublic ? "public, max-age=3600, s-maxage=300" : "private, no-store",
     },
   });
 }

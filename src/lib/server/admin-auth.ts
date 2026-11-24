@@ -130,7 +130,7 @@ export async function login(input: string): Promise<LoginResult> {
     await writeAttempts({ failures: [...recent, { ip, at: now }] });
     await new Promise((r) => setTimeout(r, FAIL_DELAY_MS));
     const left = PER_IP.max - fromIp.length - 1;
-    return { ok: false, error: left > 0 ? `Contraseña incorrecta. Te quedan ${left} intentos.` : "Contraseña incorrecta. Espera 15 minutos." };
+    return { ok: false, error: left > 0 ? `Contraseña incorrecta. Te ${left === 1 ? "queda 1 intento" : `quedan ${left} intentos`}.` : "Contraseña incorrecta. Espera 15 minutos." };
   }
 
   // Éxito: se limpian los fallos de esta IP.
