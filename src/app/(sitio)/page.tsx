@@ -20,15 +20,17 @@ const payments = store.paymentMethods.join(" o ").toLowerCase();
  * Preguntas frecuentes. Solo políticas confirmadas por la dueña (docs/04-respuestas-duena.md)
  * y funciones del sitio (Mi lista, ubicación).
  * TODO(dueña): envíos y cambios/devoluciones siguen sin respuesta; no agregarlos hasta tenerla.
+ * Ojo: las respuestas citan botones por su texto ("Pedir por WhatsApp", "Agregar a mi lista", "Cómo llegar");
+ * si se renombra un botón, actualizar aquí también.
  */
 const faqs = [
-  { q: "¿Cómo hago un pedido?", a: "Elige tu prenda, toca Pedir por WhatsApp y te confirmamos que sigue disponible." },
-  { q: "¿Puedo pedir varias prendas a la vez?", a: "Sí. En cada prenda toca Agregar a mi lista y luego manda toda tu lista en un solo WhatsApp, con el total ya sumado." },
-  { q: "¿Puedo apartar?", a: `Sí. Dejas la mitad del precio y tienes ${store.layaway.days} días para liquidar.` },
+  { q: "¿Cómo hago un pedido?", a: "Elige tu pieza, toca Pedir por WhatsApp y te confirmamos que sigue disponible para ti." },
+  { q: "¿Puedo pedir varias prendas a la vez?", a: "Claro. En cada pieza toca Agregar a mi lista y después envía tu lista completa en un solo WhatsApp, con el total ya sumado." },
+  { q: "¿Puedo apartar?", a: `Sí. Con la mitad de su precio la reservamos para ti y tienes ${store.layaway.days} días para liquidar.` },
   { q: "¿Qué formas de pago aceptan?", a: `Aceptamos ${payments}.` },
   { q: "¿Dónde están?", a: `En ${addressLine}. Abajo de esta página tienes el mapa y el botón Cómo llegar.` },
   // Pieza única (regla de la dueña, 2026-11-23): cada prenda existe una sola vez, en una talla.
-  { q: "¿Tienen la misma prenda en otra talla?", a: "Cada prenda es pieza única: hay una sola, en la talla y color que ves. Si no es tu talla, escríbenos y te mostramos algo parecido; llega mercancía nueva seguido." },
+  { q: "¿Tienen la misma prenda en otra talla?", a: "Cada prenda es pieza única: hay una sola, en la talla y color que ves. Si no es tu talla, escríbenos y con gusto te mostramos algo parecido; llegan piezas nuevas seguido." },
 ];
 
 export default async function HomePage() {
@@ -42,13 +44,14 @@ export default async function HomePage() {
       <Hero />
       <Brands products={products} />
 
-      <Section id="secciones" title="¿Qué buscas hoy?">
+      {/* Tono boutique en todo el sitio (Alejandro, 2026-11-24): mismo criterio que el hero. */}
+      <Section id="secciones" title="Recorre la tienda">
         <div className="grid gap-4 md:grid-cols-2">
           {audiences.map((a) => (
             <div key={a.id} className="hanger-panel relative rounded-lg border border-line bg-surface p-6 pt-10 sm:p-10 sm:pt-12">
               <Link href={`/catalogo?para=${a.id}`} className="group inline-flex min-h-12 items-baseline gap-3">
                 <span className="font-display text-5xl text-fg transition-colors group-hover:text-gold sm:text-6xl">{a.label}</span>
-                <span className="text-sm text-muted underline-offset-4 group-hover:text-gold group-hover:underline">Ver todo</span>
+                <span className="text-sm text-muted underline-offset-4 group-hover:text-gold group-hover:underline">Ver la selección</span>
               </Link>
               <ul className="mt-6 flex flex-wrap gap-2" aria-label={`Tipos de prenda de ${a.label}`}>
                 {categoriesFor(a.id).map((c) => (
@@ -64,13 +67,13 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      <Section id="novedades" title="Novedades" intro="Lo último que llegó a la tienda." action={{ href: "/catalogo?coleccion=nuevo", label: "Ver todas" }}>
+      <Section id="novedades" title="Novedades" intro="Las piezas que acaban de llegar a la tienda." action={{ href: "/catalogo?coleccion=nuevo", label: "Ver todas" }}>
         <ProductGrid list={nuevos} />
       </Section>
 
       <Layaway />
 
-      <Section id="ofertas" title="Ofertas" intro="Piezas únicas con mejor precio, hasta que se vendan." action={{ href: "/catalogo?coleccion=ofertas", label: "Ver todas" }}>
+      <Section id="ofertas" title="Ofertas" intro="Piezas únicas a precio especial, mientras estén disponibles." action={{ href: "/catalogo?coleccion=ofertas", label: "Ver todas" }}>
         <ProductGrid list={ofertas} />
       </Section>
 
@@ -93,7 +96,7 @@ export default async function HomePage() {
         <p className="mt-6 text-muted">
           ¿Otra duda?{" "}
           <a href={whatsappLink("Hola Reno, tengo una pregunta.")} target="_blank" rel="noopener" className="text-gold underline underline-offset-4">
-            Pregúntanos por WhatsApp
+            Te atendemos por WhatsApp
           </a>
         </p>
       </Section>
@@ -172,7 +175,7 @@ function Brands({ products }: { products: Product[] }) {
     <section aria-labelledby="marcas-title" className="mt-10 border-y border-line bg-surface">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <h2 id="marcas-title" className="text-center text-sm text-muted">
-          Marcas que encuentras en Reno
+          Marcas de nuestra selección
           {store.isDemo && <span className="block text-xs">(marcas de ejemplo mientras cargamos el catálogo real)</span>}
         </h2>
         <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
@@ -198,13 +201,13 @@ function Layaway() {
       <div className="grid gap-8 rounded-lg border border-gold-deep/60 bg-surface p-6 sm:p-10 md:grid-cols-3">
         <div className="md:col-span-1">
           <h2 id="apartado-title" className="foil-text font-display text-5xl">Apártala</h2>
-          <p className="mt-2 text-muted">Asegura tu prenda antes de que se acabe.</p>
+          <p className="mt-2 text-muted">Asegura tu pieza: la guardamos para ti.</p>
         </div>
         {/* Numerado porque sí es una secuencia: primero dejas, luego tienes el plazo, al final pagas. */}
         <ol className="grid gap-6 sm:grid-cols-3 md:col-span-2">
-          <Step n="1" title={`Deja el ${deposit}`} text="Elige tu prenda y aparta con la mitad del precio." />
-          <Step n="2" title={`${store.layaway.days} días`} text="Tienes ese plazo para liquidar lo que falta." />
-          <Step n="3" title="Paga como quieras" text={`Aceptamos ${payments}.`} />
+          <Step n="1" title={`Deja el ${deposit}`} text="Elige tu pieza y la reservamos con la mitad de su precio." />
+          <Step n="2" title={`${store.layaway.days} días`} text="Liquida el resto con calma dentro de ese plazo." />
+          <Step n="3" title="Paga como prefieras" text={`Aceptamos ${payments}.`} />
         </ol>
       </div>
     </section>
@@ -229,7 +232,7 @@ function MyListBand() {
         <HangerIcon className="h-12 w-12 shrink-0 text-gold" />
         <div className="flex-1">
           <h2 id="mi-lista-title" className="font-display text-2xl sm:text-3xl">¿Te gustó más de una?</h2>
-          <p className="mt-1 text-muted">Agrégalas a tu lista y mándalas juntas en un solo WhatsApp, con el total y el anticipo ya calculados.</p>
+          <p className="mt-1 text-muted">Guárdalas en tu lista y envíalas juntas en un solo WhatsApp, con el total y el anticipo ya calculados.</p>
         </div>
         <Link href="/mi-lista" className="inline-flex min-h-12 shrink-0 items-center rounded-full border border-gold px-6 text-gold hover:bg-gold/10">
           Ver mi lista

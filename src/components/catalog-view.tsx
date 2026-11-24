@@ -192,7 +192,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
   return (
     <div className="rounded-lg border border-dashed border-line bg-surface p-10 text-center">
       <p className="font-display text-2xl">No encontramos prendas con esos filtros</p>
-      <p className="mt-2 text-muted">Prueba con menos filtros o escríbenos: muchas prendas llegan cada semana y aún no están en la página.</p>
+      <p className="mt-2 text-muted">Prueba con menos filtros o escríbenos: con gusto te buscamos algo parecido. Llegan piezas nuevas seguido.</p>
       <button type="button" onClick={onReset} className="mt-5 inline-flex min-h-12 items-center rounded-full foil-bg px-6 font-medium">
         Ver todo el catálogo
       </button>

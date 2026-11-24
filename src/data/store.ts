@@ -8,7 +8,7 @@ export const store = {
   // Lema del logo oficial (2026-11-22).
   tagline: "Ropa premium",
   description:
-    "Reno es una tienda de ropa en México para mujer y hombre: deportiva, de vestir, pantalones, chamarras, abrigos, sacos y más. Aparta con la mitad y tienes 15 días para liquidar.",
+    "Reno es una tienda de ropa en México con prendas para mujer y hombre elegidas pieza por pieza: de vestir, deportiva, pantalones, chamarras, abrigos y sacos. Aparta con la mitad de su precio y liquida en 15 días.",
   // true = aviso de "datos de ejemplo" + noindex. Poner false al cargar productos reales.
   isDemo: true,
   // Formato internacional sin "+" ni espacios (ej. 5215512345678). null = aún no lo tenemos:

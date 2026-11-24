@@ -24,9 +24,9 @@ export function MyListView() {
         {soldCount > 0 && <p className="mb-6 text-gold"><SoldNotice count={soldCount} /></p>}
         <HangerIcon className="mx-auto h-10 w-10 text-gold" />
         <p className="mt-4 text-lg">Tu lista está vacía</p>
-        <p className="mt-1 text-muted">En cada prenda toca Agregar a mi lista y aquí las juntas para pedirlas juntas.</p>
+        <p className="mt-1 text-muted">Toca Agregar a mi lista en las piezas que te gusten y aquí las reúnes para pedirlas en un solo mensaje.</p>
         <Link href="/catalogo" className="mt-6 inline-flex min-h-12 items-center rounded-full foil-bg px-7 font-medium hover:brightness-110">
-          Ver catálogo
+          Explorar la colección
         </Link>
       </div>
     );
@@ -86,7 +86,7 @@ export function MyListView() {
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-sm">
-        <Link href="/catalogo" className="inline-flex min-h-11 items-center text-gold underline-offset-4 hover:underline">Seguir viendo ropa</Link>
+        <Link href="/catalogo" className="inline-flex min-h-11 items-center text-gold underline-offset-4 hover:underline">Seguir explorando</Link>
         <button
           type="button"
           onClick={() => {

@@ -28,7 +28,7 @@ export function ProductOrder({ product, url }: { product: Product; url: string }
           </dd>
         </div>
       </dl>
-      <p className="text-sm text-muted">Pieza única: solo hay una, en esta talla y color.</p>
+      <p className="text-sm text-muted">Pieza única: es la única disponible, en esta talla y color.</p>
 
       {/* Solo llegan aquí prendas a la venta: las vendidas ya no tienen ficha (404). */}
       <div className="space-y-3">
@@ -37,7 +37,7 @@ export function ProductOrder({ product, url }: { product: Product; url: string }
         </a>
         <a href={link("apartar")} target="_blank" rel="noopener" className="flex min-h-14 w-full flex-col items-center justify-center rounded-full border border-gold px-6 text-gold hover:bg-gold/10">
           <span className="text-lg">Apartar con {formatPrice(layawayDeposit(product.price))}</span>
-          <span className="text-xs text-muted">Dejas la mitad y tienes {store.layaway.days} días para liquidar</span>
+          <span className="text-xs text-muted">La reservamos con la mitad; liquidas en {store.layaway.days} días</span>
         </a>
         <AddToMyListButton item={{ slug: product.slug, name: product.name, price: product.price, size: product.size, color: product.color.name }} />
         <a href={link("preguntar")} target="_blank" rel="noopener" className="flex min-h-11 items-center justify-center gap-2 text-sm text-muted underline-offset-4 hover:text-gold hover:underline">
