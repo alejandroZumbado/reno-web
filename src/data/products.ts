@@ -1,16 +1,9 @@
-import type { Product } from "./catalog";
+import type { Product, StoredProduct } from "./catalog";
 
 /**
- * PRODUCTOS DE EJEMPLO (prendas y precios inventados para el demo).
- * Cómo editar (dueña / quien mantenga el sitio):
- * - Precio: cambiar `price`. Para oferta, poner el precio anterior en `compareAt`.
- * - Cada prenda es PIEZA ÚNICA (regla de la dueña, 2026-11-23): hay una sola, de una talla y un color.
- *   `size`: la talla de esa pieza, ej. "M", "28", "Unitalla". `color`: uno de la lista `c`.
- *   Si llega otra pieza igual en otra talla, es OTRO producto (otro bloque con su propio slug).
- * - Vendida: `available: false` y DESAPARECE del sitio (regla de la dueña, 2026-11-23): catálogo, portada,
- *   ficha (da 404) y sitemap. El bloque puede quedarse como registro o borrarse.
- * - Nuevo producto: copiar un bloque, cambiar `slug` (único, sin acentos ni espacios) y subir
- *   fotos a public/products/<slug>-1.jpg → `images: ["/products/<slug>-1.jpg"]`.
+ * SEMILLA: prendas de ejemplo (inventadas) que se cargan UNA vez al catálogo en Blob cuando todavía
+ * no existe (primer arranque). Desde entonces la dueña edita todo en /admin y este archivo ya no se lee.
+ * No editar aquí para cambiar el sitio: cambiar desde el admin.
  */
 
 const c = {
@@ -29,7 +22,9 @@ const c = {
 };
 
 
-const allProducts: Product[] = [
+type DemoProduct = Product & { available: boolean };
+
+const demo: DemoProduct[] = [
   // ── Mujer ──
   { slug: "blusa-satinada-cuello-v", name: "Blusa satinada cuello V", audience: "mujer", category: "blusas", collections: ["nuevo"], price: 389, size: "M", color: c.hueso, material: "100% poliéster satinado", care: "Lavar a mano en agua fría.", description: "Caída suave y brillo discreto. Para la oficina o para salir.", images: [], art: "blouse", available: true },
   { slug: "blusa-lino-manga-corta", name: "Blusa de lino manga corta", audience: "mujer", category: "blusas", collections: [], price: 349, size: "G", color: c.blanco, material: "55% lino, 45% algodón", care: "Lavar a mano. No usar secadora.", description: "Fresca y ligera. Corte recto que combina con todo.", images: [], art: "blouse", available: true },
@@ -58,5 +53,14 @@ const allProducts: Product[] = [
   { slug: "tenis-piel-hombre", name: "Tenis de piel", audience: "hombre", category: "calzado", collections: [], price: 899, size: "27", color: c.blanco, material: "Piel", care: "Limpiar con paño húmedo.", description: "Minimalistas, combinan con todo.", images: [], art: "shoe", available: false },
 ];
 
-/** Solo prendas a la venta. Todo el sitio lee de aquí; no exportar allProducts (mostraría vendidas). */
-export const products: Product[] = allProducts.filter((p) => p.available);
+/** Semilla con forma de StoredProduct. La vendida de ejemplo queda en "Vendidas" para probar Restaurar. */
+export function demoProducts(now = new Date()): StoredProduct[] {
+  const iso = now.toISOString();
+  return demo.map(({ available, ...p }, i) => ({
+    ...p,
+    id: `demo-${String(i + 1).padStart(2, "0")}`,
+    createdAt: iso,
+    updatedAt: iso,
+    ...(available ? {} : { soldAt: iso }),
+  }));
+}

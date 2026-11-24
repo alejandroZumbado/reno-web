@@ -6,7 +6,8 @@ import { Section } from "@/components/section";
 import { StoreLocation } from "@/components/store-location";
 import { WhatsAppIcon } from "@/components/whatsapp";
 import { audiences, categoriesFor } from "@/data/catalog";
-import { products } from "@/data/products";
+import type { Product } from "@/data/catalog";
+import { getPublicProducts } from "@/lib/products";
 import { store } from "@/data/store";
 import { whatsappLink } from "@/lib/format";
 import { addressLine } from "@/lib/maps";
@@ -30,7 +31,8 @@ const faqs = [
   { q: "¿Tienen la misma prenda en otra talla?", a: "Cada prenda es pieza única: hay una sola, en la talla y color que ves. Si no es tu talla, escríbenos y te mostramos algo parecido; llega mercancía nueva seguido." },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const products = await getPublicProducts();
   const nuevos = products.filter((p) => p.collections.includes("nuevo")).slice(0, 4);
   const ofertas = products.filter((p) => isOnSale(p)).slice(0, 4);
 
@@ -38,7 +40,7 @@ export default function HomePage() {
     <>
       <StoreJsonLd />
       <Hero />
-      <Brands />
+      <Brands products={products} />
 
       <Section id="secciones" title="¿Qué buscas hoy?">
         <div className="grid gap-4 md:grid-cols-2">
@@ -99,7 +101,7 @@ export default function HomePage() {
   );
 }
 
-function ProductGrid({ list }: { list: typeof products }) {
+function ProductGrid({ list }: { list: Product[] }) {
   return (
     <div className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 lg:grid-cols-4">
       {list.map((p) => <ProductCard key={p.slug} product={p} />)}
@@ -163,7 +165,7 @@ function HeroFact({ term, value }: { term: string; value: string }) {
  * Texto en serif, no logos: los logos de cada marca son registrados.
  * Solo es link si hay prendas de esa marca; si no, mandaría a un catálogo vacío.
  */
-function Brands() {
+function Brands({ products }: { products: Product[] }) {
   if (store.brands.length === 0) return null;
   const stocked = new Set(products.map((p) => p.brand).filter(Boolean));
   return (

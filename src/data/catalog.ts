@@ -79,12 +79,64 @@ export type Product = {
   material?: string;
   care?: string;
   description: string;
-  /** Rutas en /public/products. Vacío = se usa `art`. */
+  /** URLs de fotos (`/fotos/...`, servidas desde el almacén privado). La primera es la principal. Vacío = se usa `art`. */
   images: string[];
   art: ArtKind;
-  /** false = ya se vendió (pieza única, no se repone). */
-  available: boolean;
 };
+
+/**
+ * Prenda tal como se guarda (archivo del catálogo en Blob). El sitio público solo ve las que no
+ * tienen `soldAt`; las vendidas viven en "Vendidas" del admin y se borran a los 30 días.
+ */
+export type StoredProduct = Product & {
+  /** Id interno estable (carpeta de fotos). El slug no cambia aunque cambie el nombre: links compartidos. */
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  /** ISO de cuándo se marcó vendida. Ausente = a la venta. */
+  soldAt?: string;
+};
+
+/** Días que una vendida queda en "Vendidas" antes de borrarse sola (regla de Alejandro, 2026-11-23). */
+export const SOLD_RETENTION_DAYS = 30;
+
+/** Colores que la dueña puede elegir en el admin. Nombre = lo que ve la clienta y va en el WhatsApp. */
+export const colorOptions = [
+  { name: "Negro", hex: "#111111" },
+  { name: "Blanco", hex: "#F2EFE8" },
+  { name: "Hueso", hex: "#E3D9C6" },
+  { name: "Gris", hex: "#8B8D91" },
+  { name: "Camel", hex: "#B5804A" },
+  { name: "Café", hex: "#5C3A21" },
+  { name: "Dorado", hex: "#D4A62A" },
+  { name: "Vino", hex: "#6D1F2F" },
+  { name: "Rojo", hex: "#B3262E" },
+  { name: "Rosa palo", hex: "#D9A6A6" },
+  { name: "Azul marino", hex: "#1E2A44" },
+  { name: "Azul cielo", hex: "#9CC3E4" },
+  { name: "Mezclilla", hex: "#3E5C7E" },
+  { name: "Verde olivo", hex: "#5A6340" },
+  { name: "Estampado", hex: "#7A6A4F" },
+] as const;
+
+/** Dibujo de respaldo por tipo: la dueña no elige "arte", se deduce del tipo de prenda. */
+export const artForCategory: Record<CategoryId, ArtKind> = {
+  blusas: "blouse", camisas: "shirt", playeras: "tee", vestir: "pants", vestidos: "dress",
+  faldas: "skirt", pantalones: "pants", deportiva: "tee", sudaderas: "hoodie", chamarras: "jacket",
+  abrigos: "coat", sacos: "blazer", calzado: "shoe", accesorios: "bag",
+};
+
+/**
+ * Tallas sugeridas en el admin según tipo (un toque en vez de escribir). Siempre hay "Otra" para
+ * escribir una talla libre: la mercancía no siempre llega en estas medidas.
+ */
+export function sizePresetsFor(category: CategoryId, audience: AudienceId): string[] {
+  if (category === "calzado") return audience === "mujer" ? ["22", "23", "24", "25", "26"] : ["25", "26", "27", "28", "29"];
+  if (category === "accesorios") return ["Unitalla"];
+  if (category === "pantalones" || (category === "vestir" && audience === "hombre"))
+    return audience === "mujer" ? ["24", "26", "28", "30", "32", "34"] : ["28", "30", "32", "34", "36", "38", "40"];
+  return ["CH", "M", "G", "XG", "XXG", "3XG"];
+}
 
 export function labelOf(list: readonly { id: string; label: string }[], id: string) {
   return list.find((item) => item.id === id)?.label ?? id;

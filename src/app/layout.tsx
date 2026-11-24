@@ -1,8 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Bodoni_Moda, Jost } from "next/font/google";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
-import { WhatsAppFab } from "@/components/whatsapp";
 import { store } from "@/data/store";
 import "./globals.css";
 
@@ -22,23 +19,14 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#000000" };
 
+/**
+ * Raíz mínima: solo html, fuentes y estilos. El encabezado/pie del sitio viven en (sitio)/layout
+ * y el admin tiene el suyo, para que el panel de la dueña no cargue el menú público.
+ */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es-MX" className={`${bodoni.variable} ${jost.variable} antialiased`}>
-      <body className="flex min-h-dvh flex-col font-sans">
-        <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-gold focus:px-4 focus:py-2 focus:text-black">
-          Saltar al contenido
-        </a>
-        {store.isDemo && (
-          <p className="border-b border-line bg-surface px-4 py-2 text-center text-xs text-muted sm:text-sm">
-            Vista previa: productos y precios de ejemplo. Muy pronto el catálogo real de Reno.
-          </p>
-        )}
-        <SiteHeader />
-        <main id="contenido" className="flex-1">{children}</main>
-        <SiteFooter />
-        <WhatsAppFab />
-      </body>
+      <body className="flex min-h-dvh flex-col font-sans">{children}</body>
     </html>
   );
 }

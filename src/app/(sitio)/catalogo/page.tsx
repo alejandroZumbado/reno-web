@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CatalogView } from "@/components/catalog-view";
-import { products } from "@/data/products";
+import { getPublicProducts } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Catálogo",
@@ -13,7 +13,8 @@ export const metadata: Metadata = {
  * por eso CatalogView va dentro de Suspense (requisito de Next con cacheComponents).
  * Con ~cientos de productos esto sobra; si crecen a miles, mover el filtrado al servidor.
  */
-export default function CatalogPage() {
+export default async function CatalogPage() {
+  const products = await getPublicProducts();
   return (
     <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6">
       <h1 className="font-display text-4xl sm:text-5xl">Catálogo</h1>

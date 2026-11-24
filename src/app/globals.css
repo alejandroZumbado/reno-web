@@ -15,6 +15,8 @@
   --color-gold: #f2c230;
   --color-gold-deep: #b8860b;
   --color-line: #3a3326;
+  /* Errores de formulario (admin). Coral claro: 8:1 sobre negro; el rojo puro no llega a 4.5:1. */
+  --color-alert: #f2917f;
 
   --font-sans: var(--font-jost);
   --font-display: var(--font-bodoni);
@@ -109,5 +111,29 @@ body {
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * Campos del panel de la dueña. 16px de letra a propósito: con menos, Safari de iPhone hace zoom al tocar el campo.
+ */
+/* En @layer components para que utilidades como pl-8 o pr-24 sí puedan ajustarlo (sin capa, este CSS les gana). */
+@layer components {
+  .admin-input {
+    min-height: 3rem;
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-night);
+    padding: 0.625rem 1rem;
+    font-size: 1rem;
+    color: var(--color-fg);
+  }
+  .admin-input:focus {
+    /* Además del contorno global de :focus-visible (no quitarlo: WCAG 2.4.7). */
+    border-color: var(--color-gold);
+  }
+  .admin-input[aria-invalid="true"] {
+    border-color: var(--color-alert);
   }
 }

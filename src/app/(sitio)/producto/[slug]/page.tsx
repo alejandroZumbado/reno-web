@@ -4,23 +4,21 @@ import { notFound } from "next/navigation";
 import { PriceTag, ProductCard, ProductImage } from "@/components/product-card";
 import { ProductOrder } from "@/components/product-order";
 import { audiences, categories, labelOf } from "@/data/catalog";
-import { products } from "@/data/products";
+import { getPublicProduct, getPublicProducts } from "@/lib/products";
 import { store } from "@/data/store";
 import { formatPrice } from "@/lib/format";
 import { isOnSale } from "@/lib/search";
 
-/** Todas las fichas se generan en el build (catálogo estático = rápido y gratis en Vercel). */
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
+/** Prendas nuevas (subidas después del build) se generan en la primera visita y quedan en caché. */
+export async function generateStaticParams() {
+  return (await getPublicProducts()).map((p) => ({ slug: p.slug }));
 }
 
-function findProduct(slug: string) {
-  return products.find((p) => p.slug === slug);
-}
+const findProduct = getPublicProduct;
 
 export async function generateMetadata({ params }: PageProps<"/producto/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const p = findProduct(slug);
+  const p = await findProduct(slug);
   if (!p) return { title: "Producto no encontrado" };
   return {
     title: p.name,
@@ -31,11 +29,11 @@ export async function generateMetadata({ params }: PageProps<"/producto/[slug]">
 
 export default async function ProductPage({ params }: PageProps<"/producto/[slug]">) {
   const { slug } = await params;
-  const product = findProduct(slug);
+  const product = await findProduct(slug);
   if (!product) notFound();
 
   // Relacionados: misma audiencia y tipo primero; si no alcanza, misma audiencia.
-  const related = products
+  const related = (await getPublicProducts())
     .filter((p) => p.slug !== product.slug && p.audience === product.audience)
     .sort((a, b) => Number(b.category === product.category) - Number(a.category === product.category))
     .slice(0, 4);
