@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { store } from "@/data/store";
-import { formatPrice, listDeposit, listMessage, whatsappLink } from "@/lib/format";
+import { formatPrice, listDeposit, listMessage, productUrl, whatsappLink } from "@/lib/format";
 import { clearMyList, myListKey, removeFromMyList, useHydrated } from "@/lib/my-list";
 import { useMyListForSale } from "@/lib/my-list-for-sale";
 import { HangerIcon } from "./my-list-ui";
@@ -10,7 +10,7 @@ import { WhatsAppIcon } from "./whatsapp";
 
 /**
  * Contenido de /mi-lista: prendas guardadas, total, anticipo y envío por WhatsApp.
- * Los precios son los guardados al agregar; la dueña confirma el precio vigente en el chat.
+ * Los precios son los vigentes del catálogo (useMyListForSale), no los del día en que se agregó.
  */
 export function MyListView() {
   const { items, soldCount } = useMyListForSale();
@@ -34,6 +34,7 @@ export function MyListView() {
 
   const total = items.reduce((sum, i) => sum + i.price, 0);
   const deposit = listDeposit(items);
+  const messageItems = items.map((i) => ({ ...i, url: productUrl(i.slug) }));
 
   return (
     <div className="mt-8">
@@ -76,10 +77,10 @@ export function MyListView() {
       </dl>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
-        <a href={whatsappLink(listMessage(items, "pedir"))} target="_blank" rel="noopener" className="flex min-h-14 items-center justify-center gap-2 rounded-full foil-bg px-6 text-lg font-medium hover:brightness-110">
+        <a href={whatsappLink(listMessage(messageItems, "pedir"))} target="_blank" rel="noopener" className="flex min-h-14 items-center justify-center gap-2 rounded-full foil-bg px-6 text-lg font-medium hover:brightness-110">
           <WhatsAppIcon className="h-6 w-6" /> Pedir todo por WhatsApp
         </a>
-        <a href={whatsappLink(listMessage(items, "apartar"))} target="_blank" rel="noopener" className="flex min-h-14 flex-col items-center justify-center rounded-full border border-gold px-6 text-gold hover:bg-gold/10">
+        <a href={whatsappLink(listMessage(messageItems, "apartar"))} target="_blank" rel="noopener" className="flex min-h-14 flex-col items-center justify-center rounded-full border border-gold px-6 text-gold hover:bg-gold/10">
           <span className="text-lg">Apartar todo con {formatPrice(deposit)}</span>
           <span className="text-xs text-muted">{store.layaway.days} días para liquidar</span>
         </a>

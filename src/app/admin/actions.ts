@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import type { StoredProduct } from "@/data/catalog";
 import { PRODUCTS_TAG } from "@/lib/products";
 import { login, logout, requireAdmin } from "@/lib/server/admin-auth";
-import { CatalogError, deletePhotos, mutateCatalog, photoPathnames } from "@/lib/server/catalog-repo";
+import { CatalogError, deletePhotos, isRemovableDemo, mutateCatalog, photoPathnames } from "@/lib/server/catalog-repo";
 import { PRODUCT_ID_RE } from "@/lib/server/photos";
 import { parseProductForm, uniqueSlug, type FieldErrors } from "@/lib/server/product-input";
 
@@ -97,6 +97,18 @@ export async function deleteNowAction(form: FormData) {
   });
   if (removed) await deletePhotos(photoPathnames(removed)).catch((err) => console.error("[admin] fotos sin borrar", err));
   redirect(`/admin?vista=vendidas&aviso=borrada`);
+}
+
+/**
+ * Quita de un jalón las prendas de ejemplo (a la venta y vendidas). Sin esto la dueña tendría que
+ * marcar vendida y luego borrar cada una (~44 toques). Las que ya editó con fotos suyas se respetan
+ * (ver isRemovableDemo). No se borran fotos: las de ejemplo son archivos fijos del sitio, no de Blob.
+ */
+export async function removeDemosAction() {
+  await requireAdmin();
+  await mutateCatalog((list) => list.filter((p) => !isRemovableDemo(p)));
+  updateTag(PRODUCTS_TAG);
+  redirect(`/admin?aviso=ejemplos`);
 }
 
 /** Lo que la dueña escribió, para devolverlo al formulario. Colecciones unidas por coma. */

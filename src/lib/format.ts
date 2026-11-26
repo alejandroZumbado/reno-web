@@ -15,6 +15,11 @@ export function layawayDeposit(price: number) {
   return Math.ceil(price * store.layaway.depositRatio);
 }
 
+/** Link público y completo de una prenda (para mensajes y para compartir). */
+export function productUrl(slug: string) {
+  return `${store.siteUrl}/producto/${slug}`;
+}
+
 /**
  * Link de WhatsApp con mensaje prellenado.
  * Si aún no hay número (store.whatsapp = null) usa wa.me sin número: WhatsApp abre y deja elegir contacto.
@@ -60,7 +65,9 @@ export function listMessage(items: MessageItem[], intent: Exclude<ProductIntent,
   const total = items.reduce((sum, i) => sum + i.price, 0);
   const lines = items.map((i, n) => {
     const detail = [i.size && `talla ${i.size}`, i.color && `color ${i.color}`].filter(Boolean).join(", ");
-    return `${n + 1}. ${i.name}${detail ? ` (${detail})` : ""}: ${formatPrice(i.price)}`;
+    // Link por prenda: igual que en el mensaje de una sola, la dueña ve cuál es sin preguntar.
+    const line = `${n + 1}. ${i.name}${detail ? ` (${detail})` : ""}: ${formatPrice(i.price)}`;
+    return i.url ? `${line}\n${i.url}` : line;
   });
   const opening = intent === "apartar" ? "Hola Reno, quiero apartar estas prendas:" : "Hola Reno, quiero pedir estas prendas:";
   const closing =

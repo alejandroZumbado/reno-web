@@ -122,6 +122,14 @@ export async function deletePhotos(pathnames: string[]) {
   if (pathnames.length) await del(pathnames);
 }
 
+/**
+ * true si es prenda de ejemplo (id "demo-NN" de la semilla) que el botón "Quitar las de ejemplo" puede borrar.
+ * Si la dueña le subió fotos suyas, la reaprovechó como prenda real: NO se borra.
+ */
+export function isRemovableDemo(p: StoredProduct) {
+  return p.id.startsWith("demo-") && photoPathnames(p).length === 0;
+}
+
 /** true si la vendida ya cumplió los 30 días y debe borrarse. */
 export function isExpired(p: StoredProduct, now = Date.now()) {
   return !!p.soldAt && now - Date.parse(p.soldAt) >= SOLD_RETENTION_DAYS * DAY_MS;

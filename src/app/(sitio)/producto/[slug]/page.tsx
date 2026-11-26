@@ -5,8 +5,7 @@ import { PriceTag, ProductCard, ProductImage } from "@/components/product-card";
 import { ProductOrder } from "@/components/product-order";
 import { audiences, categories, labelOf } from "@/data/catalog";
 import { getPublicProduct, getPublicProducts } from "@/lib/products";
-import { store } from "@/data/store";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, productUrl } from "@/lib/format";
 import { isOnSale } from "@/lib/search";
 
 /** Prendas nuevas (subidas después del build) se generan en la primera visita y quedan en caché. */
@@ -38,7 +37,7 @@ export default async function ProductPage({ params }: PageProps<"/producto/[slug
     .sort((a, b) => Number(b.category === product.category) - Number(a.category === product.category))
     .slice(0, 4);
 
-  const url = `${store.siteUrl}/producto/${product.slug}`;
+  const url = productUrl(product.slug);
 
   return (
     <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6">

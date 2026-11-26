@@ -14,6 +14,7 @@ import {
   type CategoryId,
   type StoredProduct,
 } from "@/data/catalog";
+import type { ProductTemplate } from "@/lib/product-template";
 import { PhotoField } from "./photo-field";
 
 /**
@@ -21,14 +22,15 @@ import { PhotoField } from "./photo-field";
  * Orden pensado para la dueña con la prenda en la mano: fotos → nombre y precio → sección/tipo → talla → color.
  * Todo lo opcional va plegado en "Más detalles" para no llenar la pantalla.
  * Los errores del servidor se muestran junto a cada campo; lo escrito no se pierde.
+ * `product` = editar esa prenda. `template` = alta nueva prellenada ("Crear una parecida"); ver copyTemplate.
  */
-export function ProductForm({ productId, product }: { productId: string; product?: StoredProduct }) {
+export function ProductForm({ productId, product, template }: { productId: string; product?: StoredProduct; template?: ProductTemplate }) {
   const [state, action, pending] = useActionState<SaveState, FormData>(saveProductAction, {});
   return (
     <form action={action} className="space-y-10" noValidate>
       <input type="hidden" name="id" value={productId} />
       {/* key: tras un envío con error se vuelven a montar los campos con lo que se escribió (ver SaveState). */}
-      <FormFields key={state.attempt ?? 0} productId={productId} draft={draftFrom(product, state.values)} errors={state.errors ?? {}} pending={pending} editing={!!product} />
+      <FormFields key={state.attempt ?? 0} productId={productId} draft={draftFrom(product ?? template, state.values)} errors={state.errors ?? {}} pending={pending} editing={!!product} />
     </form>
   );
 }
@@ -39,7 +41,7 @@ type Draft = {
   description?: string; brand?: string; material?: string; care?: string; collections: string[]; images: string[];
 };
 
-function draftFrom(product: StoredProduct | undefined, values: FormValues | undefined): Draft {
+function draftFrom(product: (ProductTemplate & Partial<StoredProduct>) | undefined, values: FormValues | undefined): Draft {
   if (values) {
     let images: string[] = [];
     try {

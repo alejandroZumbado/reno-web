@@ -6,8 +6,8 @@ import { ProductArt } from "@/components/product-art";
 import { categories, labelOf, SOLD_RETENTION_DAYS, type StoredProduct } from "@/data/catalog";
 import { formatPrice } from "@/lib/format";
 import { requireAdmin } from "@/lib/server/admin-auth";
-import { daysLeft, purgeExpired, readCatalog } from "@/lib/server/catalog-repo";
-import { deleteNowAction, markSoldAction, restoreAction } from "./actions";
+import { daysLeft, isRemovableDemo, purgeExpired, readCatalog } from "@/lib/server/catalog-repo";
+import { deleteNowAction, markSoldAction, removeDemosAction, restoreAction } from "./actions";
 
 export const metadata: Metadata = { title: "Prendas" };
 
@@ -16,6 +16,7 @@ const NOTICES: Record<string, string> = {
   vendida: "Marcada como vendida: ya no se ve en el sitio.",
   restaurada: "Restaurada: vuelve a verse en el sitio.",
   borrada: "Prenda borrada para siempre.",
+  ejemplos: "Listo: se quitaron las prendas de ejemplo.",
 };
 
 /**
@@ -39,6 +40,7 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
   const forSale = all.filter((p) => !p.soldAt);
   const sold = all.filter((p) => p.soldAt).sort((a, b) => (a.soldAt! < b.soldAt! ? 1 : -1));
   const shown = filterByQuery(view === "venta" ? forSale : sold, q);
+  const demoCount = all.filter(isRemovableDemo).length;
 
   return (
     <>
@@ -57,6 +59,8 @@ export default async function AdminHome({ searchParams }: PageProps<"/admin">) {
             )}
           </div>
         )}
+
+        {demoCount > 0 && <DemoBanner count={demoCount} />}
 
         <div className="flex items-end justify-between gap-4">
           <h1 className="font-display text-3xl sm:text-4xl">Tus prendas</h1>
@@ -211,6 +215,27 @@ function SoldRow({ product }: { product: StoredProduct }) {
           </ConfirmSubmit>
         </form>
       </div>
+    </div>
+  );
+}
+
+/** Aviso con botón para quitar las de ejemplo. Desaparece solo cuando ya no queda ninguna. */
+function DemoBanner({ count }: { count: number }) {
+  const noun = count === 1 ? "prenda de ejemplo" : "prendas de ejemplo";
+  return (
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-surface px-4 py-3">
+      <p className="text-sm">
+        Tienes {count} {noun} que venían con el sitio. Quítalas cuando subas las tuyas.
+      </p>
+      <form action={removeDemosAction}>
+        <ConfirmSubmit
+          message={`¿Quitar las ${count} ${noun}? Se borran del sitio y del panel, y no se puede deshacer. Las que ya editaste con tus fotos se quedan.`}
+          className="min-h-11 rounded-full border border-gold px-4 text-sm text-gold hover:bg-gold/10"
+          pendingLabel="Quitando…"
+        >
+          Quitar las de ejemplo
+        </ConfirmSubmit>
+      </form>
     </div>
   );
 }

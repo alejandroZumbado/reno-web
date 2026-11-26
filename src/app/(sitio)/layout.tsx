@@ -7,11 +7,11 @@ import { getPublicProducts } from "@/lib/products";
 
 /** Marco del sitio público: aviso de demo, encabezado, pie y botón flotante de WhatsApp. */
 export default async function SiteLayout({ children }: LayoutProps<"/">) {
-  // Slugs a la venta para "Mi lista" (cliente): así el contador no cuenta piezas ya vendidas.
+  // Prendas a la venta (slug → precio) para "Mi lista" (cliente): no cuenta piezas vendidas y usa el precio vigente.
   // Viene de una lectura en caché, no frena la página.
-  const forSale = (await getPublicProducts()).map((p) => p.slug);
+  const prices = Object.fromEntries((await getPublicProducts()).map((p) => [p.slug, p.price]));
   return (
-    <ForSaleProvider slugs={forSale}>
+    <ForSaleProvider prices={prices}>
       <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-lg focus:bg-gold focus:px-4 focus:py-2 focus:text-black">
         Saltar al contenido
       </a>
