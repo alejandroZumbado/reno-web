@@ -44,13 +44,15 @@ export const store = {
   paymentMethods: ["Tarjeta", "Efectivo"],
   /**
    * Marcas que la dueña compra y revende; se muestran al inicio de la portada (pedido de Alejandro, 2026-11-22).
-   * TODO(dueña): PLACEHOLDER con marcas populares en México; reemplazar por las que ella compra antes de
-   * poner isDemo en false. Anunciar una marca que no se vende es publicidad engañosa (Profeco).
-   * Solo texto, nunca logos de las marcas (son registradas). Vacío = la sección no se muestra.
+   * Lista REAL de la dueña (2026-11-27). Anunciar una marca que no se vende es publicidad engañosa (Profeco):
+   * quitar la que deje de manejar. Escritas con su ortografía oficial (p. ej. "Reebok", "J.Crew") porque la
+   * búsqueda del catálogo y el campo Marca del admin deben coincidir con este texto.
+   * Solo texto, nunca logos de las marcas (son registradas y Reno no es distribuidor autorizado). Vacío = la sección no se muestra.
    */
   brands: [
-    "Nike", "Adidas", "Puma", "Levi's", "Tommy Hilfiger", "Calvin Klein",
-    "Guess", "Michael Kors", "Lacoste", "Polo Ralph Lauren", "Under Armour", "Zara",
+    "Nike", "Levi's", "Calvin Klein", "Ralph Lauren", "The North Face", "Columbia", "Under Armour",
+    "Puma", "Reebok", "Champion", "DKNY", "Hollister", "Nautica", "Chaps",
+    "Banana Republic", "J.Crew", "Gap", "Old Navy", "H&M", "Zara",
   ] as string[],
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://reno-ropa.vercel.app",
 } as const;

@@ -10,6 +10,8 @@ import {
   type CollectionId,
   type StoredProduct,
 } from "@/data/catalog";
+import { store } from "@/data/store";
+import { normalize } from "@/lib/search";
 import { MAX_PHOTOS_PER_PRODUCT, PHOTO_PATH_RE, PRODUCT_ID_RE } from "./photos";
 
 /**
@@ -86,11 +88,22 @@ export function parseProductForm(form: FormData, productId: string): { fields?: 
       description,
       ...optional("material", text(form, "material", LIMITS.material)),
       ...optional("care", text(form, "care", LIMITS.care)),
-      ...optional("brand", text(form, "brand", LIMITS.brand)),
+      ...optional("brand", canonicalBrand(text(form, "brand", LIMITS.brand))),
       images,
       art: artForCategory[category],
     },
   };
+}
+
+/**
+ * Si la marca escrita es una de store.brands sin importar mayúsculas, acentos o espacios ("NIKE", " the  north face"),
+ * se guarda con su ortografía oficial: así la portada la enlaza y la búsqueda la encuentra.
+ * No adivina faltas de letras ("Levis" sin apóstrofo no se corrige): para eso está la lista sugerida del formulario.
+ * Una marca que no está en la lista se guarda tal cual (la dueña puede vender otras sueltas).
+ */
+function canonicalBrand(value: string) {
+  const key = normalize(value).replace(/\s+/g, " ");
+  return store.brands.find((b) => normalize(b) === key) ?? value;
 }
 
 function optional<K extends string>(key: K, value: string) {

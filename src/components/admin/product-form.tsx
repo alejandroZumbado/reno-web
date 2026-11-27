@@ -14,6 +14,7 @@ import {
   type CategoryId,
   type StoredProduct,
 } from "@/data/catalog";
+import { store } from "@/data/store";
 import type { ProductTemplate } from "@/lib/product-template";
 import { PhotoField } from "./photo-field";
 
@@ -122,16 +123,15 @@ function FormFields({ productId, draft, errors, pending, editing }: { productId:
         ))}
       </Choices>
 
+      <BrandPicker initial={draft.brand} />
+
       <Field label="Descripción (opcional)" hint="Una o dos frases: para qué ocasión, cómo queda." htmlFor="description">
         <textarea id="description" name="description" rows={3} maxLength={500} defaultValue={draft.description} className="admin-input" />
       </Field>
 
-      <details className="rounded-lg border border-line bg-surface px-4 py-3 open:pb-5" open={!!(draft.material || draft.care || draft.brand || draft.collections.length)}>
+      <details className="rounded-lg border border-line bg-surface px-4 py-3 open:pb-5" open={!!(draft.material || draft.care || draft.collections.length)}>
         <summary className="min-h-11 cursor-pointer content-center text-lg">Más detalles</summary>
         <div className="mt-4 space-y-5">
-          <Field label="Marca" htmlFor="brand">
-            <input id="brand" name="brand" maxLength={40} defaultValue={draft.brand} className="admin-input" />
-          </Field>
           <Field label="Material" htmlFor="material">
             <input id="material" name="material" maxLength={100} defaultValue={draft.material} placeholder="Ej. 100% algodón" className="admin-input" />
           </Field>
@@ -222,6 +222,45 @@ function Chip({ name, value, checked, onChange, children }: { name: string; valu
       <input type="radio" name={name} value={value} checked={checked} onChange={onChange} className="sr-only" />
       {children}
     </label>
+  );
+}
+
+/**
+ * Marca: un toque en una de las marcas de la tienda (store.brands), "Sin marca" u "Otra" para escribirla.
+ * Botones en vez de texto libre (pedido de Alejandro, 2026-11-27): sin faltas de ortografía, la portada
+ * siempre enlaza la marca. Va fuera de "Más detalles" para que la dueña no la olvide.
+ */
+function BrandPicker({ initial }: { initial?: string }) {
+  const startsCustom = !!initial && !store.brands.includes(initial);
+  const [choice, setChoice] = useState<string>(startsCustom ? "__otra" : initial ?? "");
+  const [custom, setCustom] = useState(startsCustom ? initial : "");
+  const value = choice === "__otra" ? custom : choice;
+
+  return (
+    <fieldset>
+      <legend className="mb-2 text-lg">Marca</legend>
+      <input type="hidden" name="brand" value={value} />
+      <div className="flex flex-wrap gap-2">
+        {store.brands.map((b) => (
+          <Chip key={b} name="brand-choice" value={b} checked={choice === b} onChange={() => setChoice(b)}>
+            {b}
+          </Chip>
+        ))}
+        <Chip name="brand-choice" value="__otra" checked={choice === "__otra"} onChange={() => setChoice("__otra")}>
+          Otra
+        </Chip>
+        <Chip name="brand-choice" value="" checked={choice === ""} onChange={() => setChoice("")}>
+          Sin marca
+        </Chip>
+      </div>
+      {choice === "__otra" && (
+        <div className="mt-3 max-w-xs">
+          <label htmlFor="brand-custom" className="mb-1.5 block text-sm">Escribe la marca</label>
+          <input id="brand-custom" value={custom} onChange={(e) => setCustom(e.target.value)} maxLength={40} className="admin-input" autoFocus />
+          <p className="mt-1.5 text-sm text-muted">Las marcas que escribas aquí no salen en la portada.</p>
+        </div>
+      )}
+    </fieldset>
   );
 }
 

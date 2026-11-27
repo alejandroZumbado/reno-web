@@ -175,8 +175,8 @@ function Brands({ products }: { products: Product[] }) {
     <section aria-labelledby="marcas-title" className="mt-10 border-y border-line bg-surface">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <h2 id="marcas-title" className="text-center text-sm text-muted">
+          {/* Sin aviso de "ejemplo": desde 2026-11-27 la lista es la real de la dueña, aunque isDemo siga en true. */}
           Marcas de nuestra selección
-          {store.isDemo && <span className="block text-xs">(marcas de ejemplo mientras cargamos el catálogo real)</span>}
         </h2>
         <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
           {store.brands.map((b) => (
